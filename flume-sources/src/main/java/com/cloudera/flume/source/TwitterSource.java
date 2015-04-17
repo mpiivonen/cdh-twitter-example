@@ -59,7 +59,7 @@ public class TwitterSource extends AbstractSource
   private String accessToken;
   private String accessTokenSecret;
 
-  private String[] keywords;
+  private String[] follows;
 
   /** The actual Twitter stream. It's set up to collect raw JSON data */
   private  TwitterStream twitterStream;
@@ -76,13 +76,13 @@ public class TwitterSource extends AbstractSource
     accessToken = context.getString(TwitterSourceConstants.ACCESS_TOKEN_KEY);
     accessTokenSecret = context.getString(TwitterSourceConstants.ACCESS_TOKEN_SECRET_KEY);
 
-    String keywordString = context.getString(TwitterSourceConstants.KEYWORDS_KEY, "");
-    if (keywordString.trim().length() == 0) {
-        keywords = new String[0];
+    String followString = context.getString(TwitterSourceConstants.FOLLOWS_KEY, "");
+    if (followString.trim().length() == 0) {
+        follows = new String[0];
     } else {
-      keywords = keywordString.split(",");
-      for (int i = 0; i < keywords.length; i++) {
-        keywords[i] = keywords[i].trim();
+      follows = followString.split(",");
+      for (int i = 0; i < follows.length; i++) {
+        follows[i] = follows[i].trim();
       }
     }
 
@@ -140,13 +140,13 @@ public class TwitterSource extends AbstractSource
     twitterStream.addListener(listener);
 
     // Set up a filter to pull out industry-relevant tweets
-    if (keywords.length == 0) {
+    if (follows.length == 0) {
       logger.debug("Starting up Twitter sampling...");
       twitterStream.sample();
     } else {
       logger.debug("Starting up Twitter filtering...");
 
-      FilterQuery query = new FilterQuery().track(keywords);
+      FilterQuery query = new FilterQuery().follow(follows);
       twitterStream.filter(query);
     }
     super.start();
