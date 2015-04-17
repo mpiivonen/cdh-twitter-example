@@ -59,7 +59,8 @@ public class TwitterSource extends AbstractSource
   private String accessToken;
   private String accessTokenSecret;
 
-  private String[] follows;
+  private long[] follows;
+  private long[] followsFinal;
 
   /** The actual Twitter stream. It's set up to collect raw JSON data */
   private  TwitterStream twitterStream;
@@ -77,12 +78,13 @@ public class TwitterSource extends AbstractSource
     accessTokenSecret = context.getString(TwitterSourceConstants.ACCESS_TOKEN_SECRET_KEY);
 
     String followString = context.getString(TwitterSourceConstants.FOLLOWS_KEY, "");
+
     if (followString.trim().length() == 0) {
         follows = new String[0];
     } else {
       follows = followString.split(",");
       for (int i = 0; i < follows.length; i++) {
-        follows[i] = follows[i].trim();
+        followsFinal[i] = follows[i].trim();
       }
     }
 
@@ -140,7 +142,7 @@ public class TwitterSource extends AbstractSource
     twitterStream.addListener(listener);
 
     // Set up a filter to pull out industry-relevant tweets
-    if (follows.length == 0) {
+    if (followsFinal.length == 0) {
       logger.debug("Starting up Twitter sampling...");
       twitterStream.sample();
     } else {
@@ -150,7 +152,7 @@ public class TwitterSource extends AbstractSource
       twitterStream.filter(query);
     }
     super.start();
-  }
+  
 
   /**
    * Stops the Source's event processing and shuts down the Twitter stream.
