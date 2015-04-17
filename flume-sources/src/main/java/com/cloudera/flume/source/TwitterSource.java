@@ -59,7 +59,7 @@ public class TwitterSource extends AbstractSource
   private String accessToken;
   private String accessTokenSecret;
 
-  private long[] follows;
+  private String[] follows;
   private long[] followsFinal;
 
   /** The actual Twitter stream. It's set up to collect raw JSON data */
@@ -80,11 +80,13 @@ public class TwitterSource extends AbstractSource
     String followString = context.getString(TwitterSourceConstants.FOLLOWS_KEY, "");
 
     if (followString.trim().length() == 0) {
-        follows = new String[0];
+        follows = new long[0];
+        followsFinal = new long[0];
     } else {
       follows = followString.split(",");
       for (int i = 0; i < follows.length; i++) {
-        followsFinal[i] = follows[i].trim();
+        long follower = Long.parseLong(follows[i].trim());
+        followsFinal[i] = follower
       }
     }
 
