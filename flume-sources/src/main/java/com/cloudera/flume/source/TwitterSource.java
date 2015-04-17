@@ -148,7 +148,7 @@ public class TwitterSource extends AbstractSource
     } else {
       logger.debug("Starting up Twitter filtering...");
 
-      FilterQuery query = new FilterQuery().follow(follows);
+      FilterQuery query = new FilterQuery().follow(followsFinal);
       twitterStream.filter(query);
     }
     super.start();
